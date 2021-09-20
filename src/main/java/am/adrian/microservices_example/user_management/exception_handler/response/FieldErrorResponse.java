@@ -2,5 +2,12 @@ package am.adrian.microservices_example.user_management.exception_handler.respon
 
 import java.util.Collection;
 
-public record FieldErrorResponse(Collection<FieldSubErrorResponse> fieldErrors) {
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+@Getter
+public class FieldErrorResponse {
+
+    private final Collection<FieldSubErrorResponse> fieldErrors;
 }

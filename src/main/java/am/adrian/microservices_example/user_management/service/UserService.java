@@ -44,8 +44,8 @@ public class UserService {
 
     @Transactional
     public void update(UserRequest userRequest) {
-        User user = userRepository.findById(userRequest.id())
-            .orElseThrow(userNotFound(userRequest.id()));
+        User user = userRepository.findById(userRequest.getId())
+            .orElseThrow(userNotFound(userRequest.getId()));
         userMapper.mapToUser(userRequest, user);
         userRepository.save(user);
         LOGGER.info("Updated user to: {{}}", user.toString());

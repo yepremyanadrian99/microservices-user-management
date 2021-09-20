@@ -1,0 +1,65 @@
+version: "2.2"
+services:
+  postgres:
+    image: adrian-postgres:latest
+    container_name: postgres
+    restart: always
+    volumes:
+      - /opt/workspace/ayepremyan/docker/data/postgres:/var/lib/postgresql/data:rw
+    env_file:
+      - postgres.env
+    ports:
+      - "5432:5432"
+    mem_limit: 5g
+    mem_reservation: 512m
+    cpus: 1.5
+    networks:
+      microservice_network:
+        aliases:
+          - postgres-server
+  eureka-server:
+    image: 'adrian-eureka-server'
+    restart: always
+    volumes:
+      - /opt/workspace/ayepremyan/docker/data/logs:/logs:rw
+    ports:
+      - "8761:8761"
+    mem_limit: 1g
+    mem_reservation: 256m
+    cpus: 1
+    networks:
+      microservice_network:
+        aliases:
+          - eureka-server
+  user-management:
+    image: 'adrian-user-management'
+    restart: always
+    volumes:
+      - /opt/workspace/ayepremyan/docker/data/logs:/logs:rw
+    mem_limit: 1g
+    mem_reservation: 128m
+    cpus: 0.5
+    depends_on:
+      - "eureka-server"
+    networks:
+      microservice_network:
+  zuul-gateway:
+    image: 'adrian-zuul-gateway'
+    restart: always
+    volumes:
+      - /opt/workspace/ayepremyan/docker/data/logs:/logs:rw
+    ports:
+      - "8081:8081"
+    mem_limit: 1g
+    mem_reservation: 128m
+    cpus: 0.5
+    depends_on:
+      - "eureka-server"
+      - "user-management"
+    networks:
+      microservice_network:
+networks:
+  microservice_network:
+    ipam:
+      driver: default
+
